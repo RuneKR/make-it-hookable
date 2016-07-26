@@ -41,3 +41,6 @@ instance.hookableMethod('Goat').then((result: Number) => {
 });
 
 ```
+
+# License
+The MIT License (MIT)
