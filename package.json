@@ -1,0 +1,32 @@
+{
+  "name": "make-it-hookable",
+  "version": "1.0.0",
+  "description": "Create hookable methods in typescript",
+  "main": "build/src/index.js",
+  "typings": "build/src/index.d.ts",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "cors": "^2.7.1",
+    "es6-promise": "^3.2.1",
+    "express": "^4.13.4",
+    "mongodb": "^2.1.18"
+  },
+  "scripts": {
+    "test": "node build/test",
+    "prepublish": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MedSolve/make-it-hookable.git"
+  },
+  "keywords": [
+    "NodeJS",
+    "typescript"
+  ],
+  "author": "MedSolve",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MedSolve/make-it-hookalbe/issues"
+  },
+  "homepage": "https://github.com/MedSolve/make-it-hookable#readme"
+}
