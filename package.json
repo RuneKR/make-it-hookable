@@ -5,11 +5,7 @@
   "main": "build/src/index.js",
   "typings": "build/src/index.d.ts",
   "dependencies": {
-    "body-parser": "^1.14.2",
-    "cors": "^2.7.1",
-    "es6-promise": "^3.2.1",
-    "express": "^4.13.4",
-    "mongodb": "^2.1.18"
+    "es6-promise": "^3.2.1"
   },
   "scripts": {
     "test": "node build/test",
