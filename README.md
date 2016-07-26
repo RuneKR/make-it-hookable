@@ -11,9 +11,27 @@ To use this in your project and save it in the package.json file do:
 Pleas be aweare that we use [semantic versioning](http://semver.org). This means that you should be able to safely subscribe to updates on this module for versions 1.x.x or 2.x.x etc. Major versions for example from 1.x.x to 2.x.x is not safe as the module API might change.
 
 # The component
-The methods 
+The methods contained in the component and the params that the hookables they return are described below. The hookables are described as Model:Name and these models are described below the following table.
+
+| Method               | Hookable                 | Enabled hooks    |
+| -------------------- | ------------------------ | ---------------- |
+| returnable<T, U>     | Model:Returnable<T,U>    | actor            |
+| returnableAll<T, U>  | Model:ReturnableAll<T,U> | actor, pre, post |
+| -------------------- | -----------------------  | ---------------- |
+| argumentable<T, U>   | Model:Argumentable<T,U>  | actor            |
+| returnableAll<T, U>  | Model:Argumentable<T,U>  | actor, pre, post |
 
 # Included models
+NOT done
+| Name                 | Params                 | Enabled hooks    |
+| -------------------- | ------------------------ | ---------------- |
+| Returnable<T, U>     | Arg1<T>    | actor            |
+| returnableAll<T, U>  | Model:ReturnableAll<T,U> | actor, pre, post |
+| -------------------- | -----------------------  | ---------------- |
+| argumentable<T, U>   | Model:Argumentable<T,U>  | actor            |
+| returnableAll<T, U>  | Model:Argumentable<T,U>  | actor, pre, post |
+
+Read more about es6-promise [here](https://github.com/stefanpenner/es6-promise).
 
 # Examples (Detailed usage)
 In order to create a define a hookable method:
