@@ -1,3 +1,4 @@
+# Introduction: make-it-hookable
 Create hookable methods in classes in TypeScript using this static _HookableComponent_ class.
 There are two types of generic hookables:
 * Argumentable
