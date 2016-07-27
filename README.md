@@ -8,7 +8,7 @@ There are four types of [generic](https://www.typescriptlang.org/docs/handbook/g
 * ReturnableAll
 
 One should notice that there are a kind of subtype to these hookables with an appendix of either All added or nothing. 
-The appenix indicate weather or not pre, actor and post is avalable to be hooked into.
+The appenix indicate weather or not pre, actor and post is avalable to be hooked into. Where All is added pre, actor and post is allowed. Otherwhise only actor is.
 
 # The subtypes of hookables
 The aforementioned subtypes are defined in the table below.
@@ -16,12 +16,10 @@ The aforementioned subtypes are defined in the table below.
 | Subtype  | Definition                                     |
 | -------- | ---------------------------------------------- |
 | pre      | Manipulate the input parameters to the actors  |
-| per      | Actors carrying out the intended functionality |
+| actor    | Actors carrying out the intended functionality |
 | post     | Mainpulate the output of the actors            |
 
 Notice that more than one pre, post and actor hook can be added. 
-
-_Comment:_ I am thinking about only allowing one actor
 
 # Usage
 To use this in your project and save it in the package.json file do:
@@ -30,22 +28,25 @@ To use this in your project and save it in the package.json file do:
 Pleas be aweare that we use [semantic versioning](http://semver.org). This means that you should be able to safely subscribe to updates on this module for versions 1.x.x or 2.x.x etc. Major versions for example from 1.x.x to 2.x.x is not safe as the module API might change.
 
 # The component
-The methods contained in the component and the params that the hookables they return are described below. The hookables are described as Model:Name and these models are described below the following table.
+The methods contained in the _HookableComponent_ are described in the table below. Please notice that thare are a one-to-one relation naming wise. 
+Method returnable returns Returnable model, argumentableAll returns the ArgumentableAll model.
 
-| Method               | Hookable                 | Enabled hooks    |
-| -------------------- | ------------------------ | ---------------- |
-| returnable<T, U>     | Model:Returnable<T,U>    | actor            |
-| returnableAll<T, U>  | Model:ReturnableAll<T,U> | actor, pre, post |
-| -------------------- | -----------------------  | ---------------- |
-| argumentable<T, U>   | Model:Argumentable<T,U>  | actor            |
-| returnableAll<T, U>  | Model:Argumentable<T,U>  | actor, pre, post |
+| Method               | Returned model     |
+| -------------------- | ------------------ | 
+| returnable<T, U>     | Returnable<T,U>    |
+| returnableAll<T, U>  | ReturnableAll<T,U> |
+| -------------------- | -----------------  |
+| argumentable<T, U>   | Argumentable<T,U>  |
+| returnableAll<T, U>  | Argumentable<T,U>  |
 
 # Included models
-So methods in the _HookableComponent_ class return these below
+So methods in the _HookableComponent_ class return these models described below. They are to be found in the _HookableModels_ exposted in this npm module.
 
-| Method               | Hookable                 | Enabled hooks    |
+CONTINUE FROM HERE!!!
+
+| Model                | Generics                 | Retrusn    |
 | -------------------- | ------------------------ | ---------------- |
-| returnable<T, U>     | Model:Returnable<T,U>    | actor            |
+| Returnable<T,U>      | T:                       | actor            |
 | returnableAll<T, U>  | Model:ReturnableAll<T,U> | actor, pre, post |
 | -------------------- | -----------------------  | ---------------- |
 | argumentable<T, U>   | Model:Argumentable<T,U>  | actor            |
