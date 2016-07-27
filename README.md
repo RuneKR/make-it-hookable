@@ -1,11 +1,29 @@
 # Introduction: make-it-hookable
 Create hookable methods in classes in TypeScript using this static _HookableComponent_ class.
-There are two types of generic hookables:
+There are four types of [generic](https://www.typescriptlang.org/docs/handbook/generics.html) hookables:
+
 * Argumentable
-* Returnables
+* ArgumentableAll
+* Returnable
+* ReturnableAll
 
-Besides these two types there are subtypes either called Nothing or All. Read about them below. [Generic](https://www.typescriptlang.org/docs/handbook/generics.html) is defined by typescript.
+One should notice that there are a kind of subtype to these hookables with an appendix of either All added or nothing. 
+The appenix indicate weather or not pre, actor and post is avalable to be hooked into.
 
+# The subtypes of hookables
+The aforementioned subtypes are defined in the table below.
+
+| Subtype  | Definition                                     |
+| -------- | ---------------------------------------------- |
+| pre      | Manipulate the input parameters to the actors  |
+| per      | Actors carrying out the intended functionality |
+| post     | Mainpulate the output of the actors            |
+
+Notice that more than one pre, post and actor hook can be added. 
+
+_Comment:_ I am thinking about only allowing one actor
+
+# Usage
 To use this in your project and save it in the package.json file do:
 `npm install make-it-hookable --save`
 
@@ -23,10 +41,11 @@ The methods contained in the component and the params that the hookables they re
 | returnableAll<T, U>  | Model:Argumentable<T,U>  | actor, pre, post |
 
 # Included models
-NOT done
-| Name                 | Params                 | Enabled hooks    |
+So methods in the _HookableComponent_ class return these below
+
+| Method               | Hookable                 | Enabled hooks    |
 | -------------------- | ------------------------ | ---------------- |
-| Returnable<T, U>     | Arg1<T>    | actor            |
+| returnable<T, U>     | Model:Returnable<T,U>    | actor            |
 | returnableAll<T, U>  | Model:ReturnableAll<T,U> | actor, pre, post |
 | -------------------- | -----------------------  | ---------------- |
 | argumentable<T, U>   | Model:Argumentable<T,U>  | actor            |
