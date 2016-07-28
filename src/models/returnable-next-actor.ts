@@ -1,14 +1,18 @@
 import {ReturnablePostParams}     from    './returnable-next-post';
 
 /**
- * Params for the next actor
+ * Parameters accepted by the next function in actor hooks
+ * @params  {T}      arg    input to the hookable method
+ * @returns {any}    any      
  */
-export interface ReturnableActorParams<T, U> {
+export interface ReturnableActorParams<T> {
     (arg: T): any;
 }
 
 /**
- * Actual actor as called by the component
+ * The parameters given to actor type hook
+ * @params  {T}      arg    input to the hookable method
+ * @returns {any}    any    
  */
 export interface ReturnableNextActor<T, U> {
     (arg: T, next: ReturnablePostParams<T, U>): any;

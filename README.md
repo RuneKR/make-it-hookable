@@ -7,81 +7,107 @@ There are four types of [generic](https://www.typescriptlang.org/docs/handbook/g
 * Returnable
 * ReturnableAll
 
-One should notice that there are a kind of types to these hookables with an appendix of either All appended or nothing appended.
+One should notice that the hookables is separated into: _Argumentable_ vs _Returnable_ and _All_ appended to their name or nothing appended to their name.
 
 # The types of hookables
-The aforementioned types are further described here. For the _All_ type it is possible to hook into three phases: _pre_, _actor_ and _post_ hooks. Otherwhise only actor is. These phases of hooking are described below.
+The aforementioned appendence are further described here. For the _All_ type it is possible to add three types of hooks: _pre_, _actor_ and _post_. When _nothing_ is added, only the _actor_ are. 
 
-| Phase       | Definition                                                          |
+| Type        | Definition                                                          |
 | ----------  | ----------------------------------------------                      |
 | pre         | Manipulate the input parameters to the actors                       |
 | actor       | Actors carrying out the intended functionality of a hookable method |
-| post        | Mainpulate the output of the actors                                 |
+| post        | Manipulate the output of the actors                                 |
 
-Notice that more than one pre and post hook can be added. 
+Notice that multiple pre and post hook can be added.
 
 # Usage
 To use this in your project and save it in the package.json file do:
 `npm install make-it-hookable --save`
 
-Pleas be aweare that we use [semantic versioning](http://semver.org). This means that you should be able to safely subscribe to updates on this module for versions 1.x.x or 2.x.x etc. Major versions for example from 1.x.x to 2.x.x is not safe as the module API might change.
+Please be aware that we use [semantic versioning](http://semver.org). This means that you should be able to safely subscribe to updates on this module for versions 1.x.x or 2.x.x etc. Major versions for example from 1.x.x to 2.x.x is not safe as the module API might change.
 
 # The component
-The methods contained in the _HookableComponent_ are described in the table below. Please notice that thare are a one-to-one relation naming wise. Method _returnable_ returns _Returnable_ model, _argumentableAll_ returns the _ArgumentableAll_ model.
+In order to create hookable method the static methods from the _HookableComponent_ should be used. These methods are described in the table below. Please notice something about the naming. Method _returnable_ returns a _Returnable_ model, _argumentableAll_ returns a _ArgumentableAll_ mode and so on.
 
 | Method                | Returned model        |
 | --------------------  | ------------------    | 
 | returnable<T, U>      | Returnable<T,U>       |
 | returnableAll<T, U>   | ReturnableAll<T,U>    |
-| --------------------  | -----------------     |
 | argumentable<T, U>    | Argumentable<T,U>     |
 | argumentableAll<T, U> | ArgumentableAll<T,U>  |
 
-# Menaning of the generic types
 Notice this about the generics, T and U:
-* T: Type of input params to hookable method
+* T: Type of input prams to hookable method
 * U: Type of output from hookable method
 
-# Included models
-So methods in the _HookableComponent_ class return these models described below. They are to be found in the _HookableModels_ exposted in this npm module. Below is described how a hookable method in a class is run with a specific model.
+All models in this project is exposed in _HookableModels_ in this module use as needed. 
 
-| Hook Model           | Phase | Called with           | Return           |
-| -------------------- | ----------------------------- | ---------------- |
-| Returnable<T,U>      | actor | arg1 : T, arg2: Next  | Promise<U>       |
-| ReturnableAll<T,U>   | T: Type of input params       | Promise<U>       |
-| Argumentable<T,U>    | T: Type of input params       | Void             |
-| ArgumentableAll<T,U> | T: Type of input params       | Void             |
+# The returnable hookable model
+The returnable model will return a es6-promise [Promise](https://github.com/stefanpenner/es6-promise) that is resolved once all hooks has been fired or rejected if anything goes wrong. 
 
-Promise a generic itself. Read more about es6-promise [here](https://github.com/stefanpenner/es6-promise).
+## Models involved in returnable hooks
+Here the models are described involving hookables that are returnable. Returnable hooks a asynchronous, so they should call a next function with some parameters when they are done and they want the next hook to be fired. The parameters for the hooks are here described and then the the parameters that should be given to the next functions are described.
 
-# Examples (Detailed usage)
-In order to create a define a hookable method:
+| Hook Model           | Type  | Called with                                    | Returns    |
+| -------------------- | ----- |----------------------------------------------- | ---------- |
+| Returnable<T,U>      | actor | arg1 : T, next: ReturnableActorParams          | Promise<U> |
+| ReturnableAll<T,U>   | pre   | arg1 : T, next: ReturnablePreParams            | Promise<U> |
+|                      | actor | arg1 : T, next: ReturnableActorParams          |            |
+|                      | post  | arg1 : T, arg2: U, next: ReturnablePostParams  |            |
+
+The contents of the next functions are as follows:
+
+| Next function               | Called with      |
+| --------------------        | ---------------- | 
+| ReturnableActorParams<T>    | arg1: T          |
+| ReturnablePreParams<T>      | arg1: T          |
+| ReturnableActorParams<T, U> | arg1: T, arg2: U |
+
+## Example of returnable hooks
 
 ```typescript
 import {HookableComponent, HookableModels}  from    'make-it-hookable';
 
+/**
+* Some class that has a hookable method
+*/
 class SomeHookableClass {
     /**
-    * Create a hookable method that returns a number and requires string as input param
+    * Create a hookable method that returns the number of a given animal
+    * Output should here be a number and input should be a string
     */
-    public hookableMethod: HookableModels.ReturnableAll<String, Number> = HookableComponent.returnableAll();
+    public hm: HookableModels.ReturnableAll<String, Number> = HookableComponent.returnableAll();
 }
 
+// create instance of class
 let instance = new SomeHookableClass();
 
-// some function that is 
-let smartfunc = function () {
-    console.log('hey');
-}
+// create a pre hook
+instance.hm.push((input: String, next: ReturnablePreParams<String>) => {
+    
+    // change value of input to allways be goat
+    next('goat');
+});
 
-instance.hookableMethod.actor.push(smartfunc);       // add a function that actually carry out the true functionality of the hookable method
-instance.hookableMethod.pre.push(smartfunc);         // add a function that change the input params to the actor
-instance.hookableMethod.post.push(smartfunc);        // add a function that change the output from the actors
+// create an actor
+instance.hm.actor = (input: String, next: ReturnablePostParams<String, Number>) => {
+    
+    // change value of input to allways be goat
+    next(input, 10);
+};
 
-// run the method
-instance.hookableMethod('Goat').then((result: Number) => {
+// create an post hook
+instance.hm.post.push((input: String, next: ReturnablePostParams<String, Number>) => {
+    
+    // increase the number to 20
+    next(input, 20);
+});
 
-    // the content is returned here.
+// run the method (async)
+instance.hm('Cow').then((result: Number) => {
+
+    // the content is returned here. (20 goats)
+    console.log('There are: ' + result);
 });
 
 ```

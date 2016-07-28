@@ -5,7 +5,7 @@ import {Promise}        from 'es6-promise';
 
 export interface ReturnableAll<T, U> {
     (args: T): Promise<U>;
-    pre?: Array<ReturnableNextPre<T, U>>;
+    pre?: Array<ReturnableNextPre<T>>;
     post?: Array<ReturnableNextPost<T, U>>;
     actor?: ReturnableNextActor<T, U>;
 }

@@ -1,6 +1,7 @@
 import {Returnable}                from './models/returnable';
 import {ReturnableAll}             from './models/returnable-all';
-import {ReturnableNext}            from './models/returnable-next';
+import {ReturnableNextPre}         from './models/returnable-next-pre';
+import {ReturnableNextPost}        from './models/returnable-next-post';
 import {Argumentable}              from './models/argumentable';
 import {ArgumentableAll}           from './models/argumentable-all';
 import {ArgumentableNext}          from './models/argumentable-next';
@@ -56,31 +57,31 @@ export class HookableComponent {
      */
     public static returnableAll<T, U>(): ReturnableAll<T, U> {
 
-        let f: ReturnableAll<T, U> = function (args: T): Promise<U> {
+        let f: ReturnableAll<T, U> = function (arg: T): Promise<U> {
 
             return new Promise((resolve: Function, reject: Function) => {
 
                 // create stack that are being run
-                let stack_pre: Array<ReturnableNext<T, U>> = [];
+                let stack_pre: Array<ReturnableNextPre<T>> = [];
                 Array.prototype.push.apply(stack_pre, f.pre);
               
-                let stack_post: Array<ReturnableNext<T, U>> = [];
+                let stack_post: Array<ReturnableNextPost<T, U>> = [];
                 Array.prototype.push.apply(stack_post, f.post);
 
-                // run stack
-                let next: any = function (res: any): void {
+                // next for post
+                let next_post: any = function (param: T, res: U): void {
 
                     // check if any functions are left to run
-                    if (stack.length === 0) {
+                    if (stack_post.length === 0) {
                         resolve(res);
                     }
 
                     // next function to run
-                    let func: ReturnableNext<T, U> = stack.shift();
+                    let func: ReturnableNextPost<T, U> = stack_post.shift();
 
                     // try to run through the whole stack
                     try {
-                        func(args, res, next);
+                        func(param, res, next_post);
 
                         // catch error and send it back
                     } catch (err) {
@@ -90,15 +91,53 @@ export class HookableComponent {
                     }
                 };
 
-                // start ReturnableNext
-                next();
+                // next for actor 
+                let next_actor: any = function (res: T): void {
+
+                    // try to run through the whole stack
+                    try {
+                        f.actor(res, next_post);
+
+                        // catch error and send it back
+                    } catch (err) {
+
+                        // send reject back
+                        reject(err);
+                    }
+                };
+
+                // next for pre
+                let next_pre: any = function (param: T): void {
+
+                    // check if any functions are left to run
+                    if (stack_pre.length === 0) {
+                        next_actor(param);
+                    }
+
+                    // next function to run
+                    let func: ReturnableNextPre<T> = stack_pre.shift();
+
+                    // try to run through the whole stack
+                    try {
+                        func(param, next_pre);
+
+                        // catch error and send it back
+                    } catch (err) {
+
+                        // send reject back
+                        reject(err);
+                    }
+                };
+
+                // start the stacking
+                next_pre(arg);
             });
         };
 
         // prepare the holders
         f.pre = [];
         f.post = [];
-        f.actor = [];
+        f.actor = undefined;
 
         return f;
     }

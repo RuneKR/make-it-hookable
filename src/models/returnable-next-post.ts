@@ -1,12 +1,18 @@
 /**
- * Content of the next function called between post calls
+ * Parameters accepted by the next function in post type hooks
+ * @params  {T}      arg    input to the hookable method
+ * @params  {U}      res    result of the hookable method
+ * @returns {any}    any      
  */
 export interface ReturnablePostParams<T, U> {
     (arg: T, res: U): any;
 }
 
 /**
- * What a hook should contain
+ * The parameters given to post type hooks
+ * @params  {T}      arg    input to the hookable method
+ * @params  {U}      res    result of the hookable method
+ * @returns {any}    any    
  */
 export interface ReturnableNextPost<T, U> {
     (arg: T, res: U, next: ReturnablePostParams<T, U>): any;
