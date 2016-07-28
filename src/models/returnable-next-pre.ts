@@ -1,3 +1,3 @@
-export interface ReturnablePre<T> {
-    (arg: T, next: ReturnablePre<T>): any;
+export interface ReturnableNextPre<T> {
+    (arg: T, next: ReturnableNextPre<T>): any;
 }

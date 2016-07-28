@@ -16,48 +16,39 @@ import {Promise}                   from 'es6-promise';
  */
 export class HookableComponent {
     /**
-     * Actors can be hooked into here a promise is returned
+     * Create a form of skeleton function that do not actually exists but can be hooked into and thereby created
      */
     public static returnable<T, U>(): Returnable<T, U> {
 
         let f: Returnable<T, U> = function (args: T): Promise<U> {
 
+            // return the promise of a task will be done
             return new Promise((resolve: Function, reject: Function) => {
 
-                // create stack that are being run
-                let stack: Array<ReturnableNext<T, U>> = f.actor;
-
-                // run stack
+                // the next function run after the actor
                 let next: any = function (res: any): void {
 
-                    // check if any functions are left to run
-                    if (stack.length === 0) {
-                        resolve(res);
-                    }
-
-                    // next function to run
-                    let func: ReturnableNext<T, U> = stack.shift();
-
-                    // try to run through the whole stack
-                    try {
-                        func(args, res, next);
-
-                        // catch error and send it back
-                    } catch (err) {
-
-                        // send reject back
-                        reject(err);
-                    }
+                    // resolve result
+                    resolve(res);
                 };
 
-                // start ReturnableNext
-                next();
+                // try to run through the whole stack
+                try {
+                    f.actor(args, next);
+
+                    // catch error and send it back
+                } catch (err) {
+
+                    // send reject back
+                    reject(err);
+                }
             });
         };
 
         // prepare the holders
-        f.actor = [];
+        f.actor = undefined;
 
+        // return the function
         return f;
     }
     /**
@@ -70,11 +61,11 @@ export class HookableComponent {
             return new Promise((resolve: Function, reject: Function) => {
 
                 // create stack that are being run
-                let stack: Array<ReturnableNext<T, U>> = [];
-
-                Array.prototype.push.apply(stack, f.pre);
-                Array.prototype.push.apply(stack, f.actor);
-                Array.prototype.push.apply(stack, f.post);
+                let stack_pre: Array<ReturnableNext<T, U>> = [];
+                Array.prototype.push.apply(stack_pre, f.pre);
+              
+                let stack_post: Array<ReturnableNext<T, U>> = [];
+                Array.prototype.push.apply(stack_post, f.post);
 
                 // run stack
                 let next: any = function (res: any): void {
