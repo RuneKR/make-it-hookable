@@ -125,7 +125,7 @@ When an argumentable hookable is used an initial array or object like variable i
 |                      | actor | input : T, output: U, next: ArgumentableCb     |
 |                      | post  | input : T, output: U, next: ArgumentableCb     |
 
-The callback do not need any parameters as both the input and output are passed along the hooks as references (therefore object like or array like data types of these). It do however accept one input argument. This is to be understanded as an error by the [express] framework and therefore also in this component.
+The callback do not need any parameters as both the input and output are passed along the hooks as references (therefore object like or array like data types of these). It does however accept one input argument. This is to be understand as an error by the [express] framework and therefore also in this component.
 
 ## Example of argumentable hooks
 
@@ -173,3 +173,4 @@ instance.hm(req, res, (err: any) => {
 
 # License
 The MIT License (MIT)
+
