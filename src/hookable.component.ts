@@ -18,6 +18,7 @@ import {Promise}                   from 'es6-promise';
 export class HookableComponent {
     /**
      * Create a form of skeleton function that do not actually exists but can be hooked into and thereby created
+     * @returns {ReturnableAll}     Generic version that depends on the <T> and <U>
      */
     public static returnable<T, U>(): Returnable<T, U> {
 
@@ -53,7 +54,8 @@ export class HookableComponent {
         return f;
     }
     /**
-     * Generate a three layer middleware
+     * Generate a three layer middleware with both pre post and put
+     * @returns {ReturnableAll}     Generic version that depends on the <T> and <U>
      */
     public static returnableAll<T, U>(): ReturnableAll<T, U> {
 
@@ -64,7 +66,7 @@ export class HookableComponent {
                 // create stack that are being run
                 let stack_pre: Array<ReturnableNextPre<T>> = [];
                 Array.prototype.push.apply(stack_pre, f.pre);
-              
+
                 let stack_post: Array<ReturnableNextPost<T, U>> = [];
                 Array.prototype.push.apply(stack_post, f.post);
 
@@ -142,56 +144,40 @@ export class HookableComponent {
         return f;
     }
     /**
-     * Generate a three layer middleware
+     * Generate an argumentable method that dose not actually exists but can be hooked into to create functionality
+     * @returns {Argumentable}     Generic version that depends on the <T> and <U>
      */
     public static argumentable<T, U>(): Argumentable<T, U> {
 
         let f: Argumentable<T, U> = function (req: T, res: U, resolve: ArgumentableCb): void {
 
-            // create stack that are being run
-            let stack: Array<ArgumentableNext<T, U>> = [];
+            // resolving the actor
+            let next: any = (err: any) => {
 
-            Array.prototype.push.apply(stack, f.actor);
-
-            // run stack
-            let next: any = function (err: any): void {
-
-                // send back the error
-                if (err !== undefined) {
-                    resolve(err);
-                }
-
-                // check if any functions are left to run
-                if (stack.length === 0) {
-                    resolve();
-                }
-
-                // next function to run
-                let func: ArgumentableNext<T, U> = stack.shift();
-
-                // try to run through the whole stack
-                try {
-                    func(req, res, next);
-
-                    // catch error and send it back
-                } catch (err) {
-
-                    // send reject back
-                    resolve(err);
-                }
+                // send back result
+                resolve(err);
             };
 
-            // start ReturnableNext
-            next();
+            // try to run through the whole stack
+            try {
+                f.actor(req, res, next);
+
+                // catch error and send it back
+            } catch (err) {
+
+                // send reject back
+                resolve(err);
+            }
         };
 
         // prepare the holders
-        f.actor = [];
+        f.actor = undefined;
 
         return f;
     }
     /**
-     * Generate a one layer middleware
+     * Generate a full three layer hookable method
+     * @returns {ArgumentableAll}     Generic version that depends on the <T> and <U>
      */
     public static argumentableAll<T, U>(): ArgumentableAll<T, U> {
 
@@ -201,7 +187,7 @@ export class HookableComponent {
             let stack: Array<ArgumentableNext<T, U>> = [];
 
             Array.prototype.push.apply(stack, f.pre);
-            Array.prototype.push.apply(stack, f.actor);
+            stack.push(f.actor);
             Array.prototype.push.apply(stack, f.post);
 
             // run stack
@@ -209,7 +195,7 @@ export class HookableComponent {
 
                 // send back the error
                 if (err !== undefined) {
-                    resolve(err);
+                    return resolve(err);
                 }
 
                 // check if any functions are left to run
@@ -239,7 +225,7 @@ export class HookableComponent {
         // prepare the holders
         f.pre = [];
         f.post = [];
-        f.actor = [];
+        f.actor = undefined;
 
         return f;
     }

@@ -112,5 +112,64 @@ instance.hm('Cow').then((result: Number) => {
 
 ```
 
+# The argumentable hookable model
+The reason for this model to exists is to support the ability of creating hooks that can used with [express](http://expressjs.com). The basic idea here is that the type of the input and output are either some kind of objects or arrays.
+
+## Models involved in argumentable hooks
+When an argumentable hookable is used an initial array or object like variable is created and passed along the call to the hookable along with a callback _ArgumentableCb_ that is called once the all hooks are done. 
+
+| Hook Model           | Type  | Called with                                    |
+| -------------------- | ----- |----------------------------------------------- |
+| Argumentable<T,U>    | actor | input : T, output: U, next: ArgumentableCb     |
+| ArugmentableAll<T,U> | pre   | input : T, output: U, next: ArgumentableCb     |
+|                      | actor | input : T, output: U, next: ArgumentableCb     |
+|                      | post  | input : T, output: U, next: ArgumentableCb     |
+
+The callback do not need any parameters as both the input and output are passed along the hooks as references (therefore object like or array like data types of these). It do however accept one input argument. This is to be understanded as an error by the [express] framework and therefore also in this component.
+
+## Example of argumentable hooks
+
+```typescript
+import {HookableComponent, HookableModels}  from    'make-it-hookable';
+import * as express                         from    'express';
+
+/**
+* Some class that has a hookable method
+*/
+class SomeHookableClass {
+    /**
+    * Create a hookable method for express
+    * Params should be objects or arrays
+    */
+    public hm: HookableModels.Argumentable<express.Request, express.Response> = HookableComponent.argumentable();
+}
+
+// create instance of class
+let instance = new SomeHookableClass();
+
+// create an actor
+instance.hm.actor = (req: express.Request, res: express.Response, cb: HookableModels.ArgumentableCb) => {
+    
+    // set some prop of response
+    res.params.goat = true;
+
+    // no errors is made
+    cb();
+};
+
+// this would in express normally be invoked by an express router
+let req: express.Request = {};
+let res: express.Response = {};
+
+instance.hm(req, res, (err: any) => {
+
+    // do something about err if any?
+
+    // otherwise perform action
+    console.log('There are goats?: ' + res.params.goat);
+});
+
+```
+
 # License
 The MIT License (MIT)
