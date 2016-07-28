@@ -1,6 +1,6 @@
 {
   "name": "make-it-hookable",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Create hookable methods in typescript",
   "main": "build/src/index.js",
   "typings": "build/src/index.d.ts",
