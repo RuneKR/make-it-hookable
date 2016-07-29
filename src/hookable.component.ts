@@ -64,26 +64,26 @@ export class HookableComponent {
             return new Promise((resolve: Function, reject: Function) => {
 
                 // create stack that are being run
-                let stack_pre: Array<ReturnableNextPre<T>> = [];
-                Array.prototype.push.apply(stack_pre, f.pre);
+                let stackPre: Array<ReturnableNextPre<T>> = [];
+                Array.prototype.push.apply(stackPre, f.pre);
 
-                let stack_post: Array<ReturnableNextPost<T, U>> = [];
-                Array.prototype.push.apply(stack_post, f.post);
+                let stackPost: Array<ReturnableNextPost<T, U>> = [];
+                Array.prototype.push.apply(stackPost, f.post);
 
                 // next for post
-                let next_post: any = function (param: T, res: U): void {
+                let nextPost: any = function (param: T, res: U): void {
 
                     // check if any functions are left to run
-                    if (stack_post.length === 0) {
+                    if (stackPost.length === 0) {
                         resolve(res);
                     }
 
                     // next function to run
-                    let func: ReturnableNextPost<T, U> = stack_post.shift();
+                    let func: ReturnableNextPost<T, U> = stackPost.shift();
 
                     // try to run through the whole stack
                     try {
-                        func(param, res, next_post);
+                        func(param, res, nextPost);
 
                         // catch error and send it back
                     } catch (err) {
@@ -94,11 +94,11 @@ export class HookableComponent {
                 };
 
                 // next for actor 
-                let next_actor: any = function (res: T): void {
+                let nextActor: any = function (res: T): void {
 
                     // try to run through the whole stack
                     try {
-                        f.actor(res, next_post);
+                        f.actor(res, nextPost);
 
                         // catch error and send it back
                     } catch (err) {
@@ -109,19 +109,19 @@ export class HookableComponent {
                 };
 
                 // next for pre
-                let next_pre: any = function (param: T): void {
+                let nextPre: any = function (param: T): void {
 
                     // check if any functions are left to run
-                    if (stack_pre.length === 0) {
-                        next_actor(param);
+                    if (stackPre.length === 0) {
+                        nextActor(param);
                     }
 
                     // next function to run
-                    let func: ReturnableNextPre<T> = stack_pre.shift();
+                    let func: ReturnableNextPre<T> = stackPre.shift();
 
                     // try to run through the whole stack
                     try {
-                        func(param, next_pre);
+                        func(param, nextPre);
 
                         // catch error and send it back
                     } catch (err) {
@@ -132,7 +132,7 @@ export class HookableComponent {
                 };
 
                 // start the stacking
-                next_pre(arg);
+                nextPre(arg);
             });
         };
 
@@ -151,27 +151,44 @@ export class HookableComponent {
 
         let f: Argumentable<T, U> = function (req: T, res: U, resolve: ArgumentableCb): void {
 
-            // resolving the actor
-            let next: any = (err: any) => {
+            // create stack that are being run
+            let stack: Array<ArgumentableNext<T, U>> = [];
+            Array.prototype.push.apply(stack, f.actor);
 
-                // send back result
-                resolve(err);
+            // run stack
+            let next: any = function (err: any): void {
+
+                // send back the error
+                if (err !== undefined) {
+                    return resolve(err);
+                }
+
+                // check if any functions are left to run
+                if (stack.length === 0) {
+                    resolve();
+                }
+
+                // next function to run
+                let func: ArgumentableNext<T, U> = stack.shift();
+
+                // try to run through the whole stack
+                try {
+                    func(req, res, next);
+
+                    // catch error and send it back
+                } catch (err) {
+
+                    // send reject back
+                    resolve(err);
+                }
             };
 
-            // try to run through the whole stack
-            try {
-                f.actor(req, res, next);
-
-                // catch error and send it back
-            } catch (err) {
-
-                // send reject back
-                resolve(err);
-            }
+            // start ReturnableNext
+            next();
         };
 
         // prepare the holders
-        f.actor = undefined;
+        f.actor = [];
 
         return f;
     }
@@ -187,7 +204,7 @@ export class HookableComponent {
             let stack: Array<ArgumentableNext<T, U>> = [];
 
             Array.prototype.push.apply(stack, f.pre);
-            stack.push(f.actor);
+            Array.prototype.push.apply(stack, f.actor);
             Array.prototype.push.apply(stack, f.post);
 
             // run stack
@@ -225,7 +242,7 @@ export class HookableComponent {
         // prepare the holders
         f.pre = [];
         f.post = [];
-        f.actor = undefined;
+        f.actor = [];
 
         return f;
     }

@@ -18,7 +18,7 @@ The aforementioned appendence are further described here. For the _All_ type it 
 | actor       | Actors carrying out the intended functionality of a hookable method |
 | post        | Manipulate the output of the actors                                 |
 
-Notice that multiple pre and post hook can be added.
+Notice that multiple pre and post hooks can be added for Returnable. Multiple pre, actor and post hooks can be added for Argumentable.
 
 # Usage
 To use this in your project and save it in the package.json file do:
