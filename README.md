@@ -148,14 +148,14 @@ class SomeHookableClass {
 let instance = new SomeHookableClass();
 
 // create an actor
-instance.hm.actor = (req: express.Request, res: express.Response, cb: HookableModels.ArgumentableCb) => {
+instance.hm.actor.push((req: express.Request, res: express.Response, cb: HookableModels.ArgumentableCb) => {
     
     // set some prop of response
     res.params.goat = true;
 
     // no errors is made
     cb();
-};
+});
 
 // this would in express normally be invoked by an express router
 let req: express.Request = {};
