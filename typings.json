@@ -1,5 +1,5 @@
 {
-  "name": "ords-fhir",
+  "name": "make-it-hookable",
   "version": false,
   "globalDependencies": {
         "node": "registry:dt/node#4.0.0+20160509154515"
