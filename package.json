@@ -1,14 +1,15 @@
 {
   "name": "make-it-hookable",
-  "version": "1.3.1",
+  "version": "3.0.0",
   "description": "Create hookable methods in typescript",
-  "main": "build/src/index.js",
-  "typings": "build/src/index.d.ts",
+  "main": "build/index.js",
+  "typings": "build/index.d.ts",
   "dependencies": {
+    "async": "^2.1.4",
     "es6-promise": "^3.2.1"
   },
   "scripts": {
-    "test": "node build/test",
+    "test": "node build/hook.test",
     "prepublish": "tsc"
   },
   "repository": {

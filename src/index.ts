@@ -1,2 +1,2 @@
-export {HookableComponent}    from    './hookable.component';
-import * as HookableModels    from    './hookable.models'; export {HookableModels};
+export * from './hook.component';
+import * as HookLib      from    './hook.lib'; export {HookLib}
