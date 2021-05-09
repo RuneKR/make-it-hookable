@@ -6,11 +6,13 @@
   "typings": "build/index.d.ts",
   "dependencies": {
     "async": "^2.1.4",
-    "es6-promise": "^3.2.1"
+    "es6-promise": "^3.2.1",
+    "snyk": "^1.316.1"
   },
   "scripts": {
     "test": "node build/hook.test",
-    "prepublish": "tsc"
+    "prepublish": "npm run snyk-protect && tsc",
+    "snyk-protect": "snyk protect"
   },
   "repository": {
     "type": "git",
@@ -25,5 +27,6 @@
   "bugs": {
     "url": "https://github.com/MedSolve/make-it-hookalbe/issues"
   },
-  "homepage": "https://github.com/MedSolve/make-it-hookable#readme"
+  "homepage": "https://github.com/MedSolve/make-it-hookable#readme",
+  "snyk": true
 }
